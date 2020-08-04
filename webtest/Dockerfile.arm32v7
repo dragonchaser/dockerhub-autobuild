@@ -1,0 +1,12 @@
+FROM arm32v7/debian:buster-slim
+COPY qemu-arm-static /usr/bin
+MAINTAINER "dragonchaser <crichter@suse.de>"
+RUN apt-get update \
+	&& apt-get install -y ruby
+EXPOSE 80
+RUN mkdir /web
+RUN chmod 0777 /web
+WORKDIR /web
+COPY ./entrypoint.sh /bin
+COPY ./index.html /web
+ENTRYPOINT entrypoint.sh
