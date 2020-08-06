@@ -1,10 +1,12 @@
 FROM debian:latest
+MAINTAINER "dragonchaser <crichter@suse.de>"
 RUN apt-get update \
-	&& apt-get install -y ruby
-EXPOSE 80
-RUN mkdir /web
-RUN chmod 0777 /web
-WORKDIR /web
+	&& apt-get install -y ruby \
+  && rm -rf /var/lib/apt/lists/* \
+  && mkdir /web \
+  && chmod 0777 /web
 COPY ./entrypoint.sh /bin
 COPY ./index.html /web
+WORKDIR /web
+EXPOSE 80
 ENTRYPOINT entrypoint.sh
