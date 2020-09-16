@@ -1,5 +1,5 @@
 FROM debian:latest
-MAINTAINER "dragonchaser <crichter@suse.de>"
+LABEL maintainer="dragonchaser <crichter@suse.de>"
 RUN apt-get update \
 	&& apt-get install -y ruby \
   && rm -rf /var/lib/apt/lists/* \
