@@ -1,7 +1,7 @@
 FROM arm32v7/debian:buster-slim
 COPY qemu-arm-static /usr/bin
 LABEL maintainer="dragonchaser <crichter@suse.de>"
-RUN apt-get update && apt-get install -y libssl-dev libffi-dev python3-pip libopenjp2-7 python3-libtiff
+RUN apt-get update && apt-get install -y libssl-dev libffi-dev python3-pip libopenjp2-7 python3-libtiff python3-six
 RUN pip3 install cryptography
 RUN pip3 install matrix-synapse
 EXPOSE 8448
