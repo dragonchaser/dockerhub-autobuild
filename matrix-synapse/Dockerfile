@@ -1,6 +1,6 @@
 FROM debian:latest
 LABEL maintainer="dragonchaser <crichter@suse.de>"
-RUN apt-get update && apt-get install -y python3-pip libopenjp2-7 python3-libtiff
+RUN apt-get update && apt-get install -y python3-pip libopenjp2-7 python3-libtiff python3-six
 RUN pip3 install matrix-synapse
 EXPOSE 8448
 EXPOSE 8008
