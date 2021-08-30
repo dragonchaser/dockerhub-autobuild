@@ -1,0 +1,52 @@
+name: Docker Image CI
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+
+  build:
+
+    runs-on: ubuntu-latest
+    env:
+      DOCKER_REGISTRY: ghcr.io
+      DOCKER_IMAGE: dragonchaser/motsognir
+      DOCKER_TARGET_PLATFORM: linux/arm/v7
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Set up Docker Buildx
+      uses: crazy-max/ghaction-docker-buildx@v1
+      with:
+        version: latest
+
+    - name: Prepare
+      if: success()
+      id: prepare
+      run: |
+        echo ::set-output name=docker_platform::${DOCKER_TARGET_PLATFORM}        
+        echo ::set-output name=docker_image::${DOCKER_REGISTRY}/${DOCKER_IMAGE}        
+        #echo ::set-output name=version::${GITHUB_RUN_NUMBER}    
+        echo ::set-output name=version::latest-arm32v7
+
+    - name: Log into registry
+      run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+      
+    - name: Run Buildx (arm32v7)
+      if: success()
+      run: |
+        cd motsognir
+        docker buildx build --platform ${{ steps.prepare.outputs.docker_platform }} --tag ${{ steps.prepare.outputs.docker_image }}:${{steps.prepare.outputs.version }} --file ./Dockerfile.arm32v7 --output type=image,push=true .
+
+    - name: Build the Docker image (amd64)
+      run: |
+        cd motsognir
+        docker build . --file Dockerfile --tag ${{steps.prepare.outputs.docker_image}}:latest
+    - name: Push images
+      run: |
+        docker push ${{steps.prepare.outputs.docker_image}}:latest
+        #docker push ${{steps.prepare.outputs.docker_image}}:latest-arm32v7
