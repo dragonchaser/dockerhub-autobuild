@@ -1,0 +1,42 @@
+name: Docker Image CI for GHRUNNER
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+
+  build:
+
+    runs-on: ubuntu-latest
+    env:
+      DOCKER_REGISTRY: ghcr.io
+      DOCKER_IMAGE: dragonchaser/ghrunner
+      DOCKER_TARGET_PLATFORM: "linux/arm/v7,linux/arm64,linux/amd64"
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Set up Docker Buildx
+      uses: crazy-max/ghaction-docker-buildx@v1
+      with:
+        version: latest
+
+    - name: Prepare
+      if: success()
+      id: prepare
+      run: |
+        echo ::set-output name=docker_platform::${DOCKER_TARGET_PLATFORM}        
+        echo ::set-output name=docker_image::${DOCKER_REGISTRY}/${DOCKER_IMAGE}        
+        echo ::set-output name=version::latest
+
+    - name: Log into registry
+      run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+      
+    - name: Run Buildx
+      if: success()
+      run: |
+        cd ghrunner
+        docker buildx build --platform ${{ steps.prepare.outputs.docker_platform }} --tag ${{ steps.prepare.outputs.docker_image }}:${{steps.prepare.outputs.version }} --file ./Dockerfile --output type=image,push=true .

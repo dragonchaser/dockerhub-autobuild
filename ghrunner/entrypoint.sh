@@ -16,5 +16,5 @@ curl -o ${FILE} -L https://github.com/actions/runner/releases/download/v${VERSIO
 echo "${CHECKSUM}  ${FILE}" | shasum -a 256 -c
 tar xzf ./${FILE}
 ./bin/installdependencies.sh
-su runner -c "./config.sh --unattended --url https://github.com/${ORG}/${REPO} --token ${TOKEN} --name docker-runner-$(hostname)"
+su runner -c "./config.sh --unattended --url https://github.com/${ORG}/${REPO} --token ${TOKEN} --name docker-runner-$(hostname) --labels=${ARCH},${OS},self-hosted"
 su runner -c "./run.sh"
