@@ -6,8 +6,16 @@ ORG=${ORG:-dragonchaser}
 REPO=${REPO:-dockerhub-autobuild}
 OS=${OS:-linux}
 
+if [ -z "${ORG}" ]; then
+    echo "missing ORG, bailing out!"
+fi
+
+if [ -z "${REPO}" ]; then
+    echo "missing REPO, bailing out!"
+fi
+
 if [ -z "${TOKEN}" ]; then
-    echo "MISSING TOKEN, BAILING OUT!"
+    echo "missing TOKEN, bailing out!"
     exit 1
 fi
 
