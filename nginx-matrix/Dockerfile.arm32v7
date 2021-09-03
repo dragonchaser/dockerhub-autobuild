@@ -1,6 +1,0 @@
-FROM arm32v7/nginx:latest
-COPY qemu-arm-static /usr/bin
-LABEL maintainer="dragonchaser <crichter@suse.de>"
-EXPOSE 80
-EXPOSE 443
-EXPOSE 8448
