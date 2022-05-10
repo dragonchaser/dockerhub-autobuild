@@ -14,6 +14,6 @@ RUN rm -Rfv /etc/apt/sources.list.*
 RUN rm -Rfv /build
 RUN useradd -ms /bin/bash -d /gopher gopher
 WORKDIR /gopher
-COPY entrypoint.sh /
-COPY rsyslog.conf /etc
+COPY motsognir/entrypoint.sh /
+COPY motsognir/rsyslog.conf /etc
 ENTRYPOINT ["/entrypoint.sh"]
