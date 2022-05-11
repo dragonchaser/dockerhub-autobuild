@@ -57,7 +57,7 @@ def stepMergeMaster(arch):
                 "settings": {
                     "dockerfile": "motsognir/Dockerfile",
                     "repo": "dragonchaser/motsognir",
-                    "dry_run": "true",
+                    "dry_run": "false",
                     "tag": "latest-%s" % (arch),
                     "username": {
                         "from_secret": "dockerhub-user"
