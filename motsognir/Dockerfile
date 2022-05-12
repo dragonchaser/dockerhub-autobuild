@@ -1,5 +1,5 @@
 FROM debian:latest
-LABEL maintainer="dragonchaser <crichter@suse.de>"
+LABEL maintainer="dragonchaser <motsognir@datenschmutz.space>"
 ENV VERSION=1.0.13
 ENV TARBALL="motsognir-${VERSION}.tar.xz"
 EXPOSE 70
