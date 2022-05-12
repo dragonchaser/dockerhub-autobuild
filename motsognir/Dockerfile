@@ -1,5 +1,5 @@
 FROM debian:latest
-LABEL maintainer="dragonchaser <motsognir@datenschmutz.space>"
+LABEL maintainer="dragonchaser <autobuilds@datenschmutz.space>"
 ENV VERSION=1.0.13
 ENV TARBALL="motsognir-${VERSION}.tar.xz"
 EXPOSE 70

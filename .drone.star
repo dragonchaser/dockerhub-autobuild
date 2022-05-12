@@ -1,62 +1,83 @@
 def main(ctx):
     return [
-        stepPR("amd64"),
-        stepPR("arm64"),
-        stepMergeMaster("amd64"),
-        stepMergeMaster("arm64"),
+        stepPR("amd64", "motsognir"),
+        stepPR("arm64", "motsognir"),
+        stepMergeMaster("amd64", "motsognir"),
+        stepMergeMaster("arm64", "motsognir"),
+
+        stepPR("amd64", "webtest"),
+        stepPR("arm64", "webtest"),
+        stepMergeMaster("amd64", "webtest"),
+        stepMergeMaster("arm64", "webtest"),
     ]
 
 
-def stepPR(arch):
+def stepPR(arch, path):
     return {
         "kind": "pipeline",
         "type": "docker",
-        "name": "docker-build-%s" % (arch),
+        "name": "docker-build-%s-%s" % (path, arch),
         "platform": {
             "os": "linux",
             "arch": arch,
         },
         "steps": [
             {
-                "name": "build-image-%s" % (arch),
+                "name": "build-image-%s-%s" % (path, arch),
                 "image": "plugins/docker",
                 "settings": {
-                    "dockerfile": "motsognir/Dockerfile",
-                    "repo": "dragonchaser/motsognir",
+                    "dockerfile": "%s/Dockerfile" % (path),
+                    "repo": "dragonchaser/%s" % (path),
                     "dry_run": "true",
                     "tag": "latest-%s" % (arch),
-                    "username": {
-                        "from_secret": "dockerhub-user"
-                    },
-                    "password": {
-                        "from_secret": "dockerhub-password"
-                    }
                 }
+            },
+            {
+              "name": "notify-build-%s-%s" % (path, arch),
+              "image": "plugins/matrix",
+              "settings": {
+                "homeserver": {
+                  "from_secret": "matrix-homeserver"
+                },
+                "roomid": {
+                  "from_secret": "matrix-room"
+                },
+                "username": {
+                  "from_secret": "matrix-user"
+                },
+                "password": {
+                  "from_secret": "matrix-password"
+                }
+              }
             },
         ],
         "trigger": {
             "ref": [
                 "refs/pull/**",
             ],
+            "status": [
+              "success",
+              "failure"
+            ]
         },
     }
 
-def stepMergeMaster(arch):
+def stepMergeMaster(arch, path):
     return {
         "kind": "pipeline",
         "type": "docker",
-        "name": "docker-publish-%s" % (arch),
+        "name": "docker-publish-%s-%s" % (path, arch),
         "platform": {
             "os": "linux",
             "arch": arch,
         },
         "steps": [
             {
-                "name": "build-build-and-publish-image-%s" % (arch),
+                "name": "build-and-publish-image-%s-%s" % (path, arch),
                 "image": "plugins/docker",
                 "settings": {
-                    "dockerfile": "motsognir/Dockerfile",
-                    "repo": "dragonchaser/motsognir",
+                    "dockerfile": "%s/Dockerfile" % (path),
+                    "repo": "dragonchaser/%s" % (path),
                     "dry_run": "false",
                     "tag": "latest-%s" % (arch),
                     "username": {
@@ -67,10 +88,32 @@ def stepMergeMaster(arch):
                     }
                 }
             },
+            {
+              "name": "notify-publish-%s-%s" % (path, arch),
+              "image": "plugins/matrix",
+              "settings": {
+                "homeserver": {
+                  "from_secret": "matrix-homeserver"
+                },
+                "roomid": {
+                  "from_secret": "matrix-room"
+                },
+                "username": {
+                  "from_secret": "matrix-user"
+                },
+                "password": {
+                  "from_secret": "matrix-password"
+                }
+              }
+            },
         ],
         "trigger": {
             "ref": [
                 "refs/heads/master",
             ],
+            "status": [
+              "success",
+              "failure"
+            ]
         },
     }
