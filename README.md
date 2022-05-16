@@ -1,5 +1,7 @@
 # dockerhub-autobuild
 
+[![Build Status](https://drone.services.datenschmutz.space/api/badges/dragonchaser/dockerhub-autobuild/status.svg)](https://drone.services.datenschmutz.space/dragonchaser/dockerhub-autobuild)
+
 This repo contains Dockerfiles used for autobuilding on Dockerhub.
 No guarantee for completeness or functionality.
 
