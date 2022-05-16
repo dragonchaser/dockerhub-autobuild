@@ -4,16 +4,16 @@ A container for the motsognir gopher server http://motsognir.sourceforge.net/
 
 ## Running locally
 
-**x86_64**
+**amd64**
 
 ```
-$> docker run -p 70:70 -v /path/to/you/local/gopherfolder:/gopher dragonchaser/motsognir:latest 
+$> docker run -p 70:70 -v /path/to/you/local/gopherfolder:/gopher dragonchaser/motsognir:latest-amd64 
 ```
 
-**arm32v7**
+**arm64**
 
 ```
-$> docker run -p 70:70 -v /path/to/you/local/gopherfolder:/gopher dragonchaser/motsognir:latest-arm32v7 
+$> docker run -p 70:70 -v /path/to/you/local/gopherfolder:/gopher dragonchaser/motsognir:latest-arm64
 ```
 
 **Notes:** 
