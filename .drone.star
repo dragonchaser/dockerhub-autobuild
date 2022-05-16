@@ -2,13 +2,13 @@ def main(ctx):
     return [
         stepPR("amd64", "motsognir"),
         stepPR("arm64", "motsognir"),
-        stepMergeMaster("amd64", "motsognir"),
-        stepMergeMaster("arm64", "motsognir"),
+        stepMergeMasterAndBuildWeekly("amd64", "motsognir"),
+        stepMergeMasterAndBuildWeekly("arm64", "motsognir"),
 
         stepPR("amd64", "webtest"),
         stepPR("arm64", "webtest"),
-        stepMergeMaster("amd64", "webtest"),
-        stepMergeMaster("arm64", "webtest"),
+        stepMergeMasterAndBuildWeekly("amd64", "webtest"),
+        stepMergeMasterAndBuildWeekly("arm64", "webtest"),
     ]
 
 
@@ -62,7 +62,7 @@ def stepPR(arch, path):
         },
     }
 
-def stepMergeMaster(arch, path):
+def stepMergeMasterAndBuildWeekly(arch, path):
     return {
         "kind": "pipeline",
         "type": "docker",
@@ -114,6 +114,12 @@ def stepMergeMaster(arch, path):
             "status": [
               "success",
               "failure"
+            ],
+            "event": [
+              "cron"
+            ],
+            "cron": [
+              "nightly"
             ]
         },
     }
