@@ -6,15 +6,74 @@ def main(ctx):
         stepMergeMaster("arm64", "motsognir"),
         stepBuildWeekly("amd64", "motsognir"),
         stepBuildWeekly("arm64", "motsognir"),
-
+        
         stepPR("amd64", "webtest"),
         stepPR("arm64", "webtest"),
         stepMergeMaster("amd64", "webtest"),
         stepMergeMaster("arm64", "webtest"),
         stepBuildWeekly("amd64", "webtest"),
         stepBuildWeekly("arm64", "webtest"),
+
+        notify(ctx),
     ]
 
+def notify(ctx):
+  return {
+        "kind": "pipeline",
+        "type": "docker",
+        "name": "matrix-notifications",
+        "clone": {
+            "disable": True,
+        },
+        "steps": [
+          {
+              "name": "notify",
+              "image": "plugins/matrix",
+              "settings": {
+                "homeserver": {
+                  "from_secret": "matrix-homeserver"
+                },
+                "roomid": {
+                  "from_secret": "matrix-room"
+                },
+                "username": {
+                  "from_secret": "matrix-user"
+                },
+                "password": {
+                  "from_secret": "matrix-password"
+                }
+              }
+            },
+        ],
+        "depends_on": [ 
+                        "docker-build-motsognir-amd64", 
+                        "docker-build-motsognir-arm64", 
+                        "docker-build-webtest-amd64",
+                        "docker-build-webtest-arm64",                  
+
+                        "docker-publish-motsognir-amd64", 
+                        "docker-publish-motsognir-arm64", 
+                        "docker-publish-webtest-amd64",
+                        "docker-publish-webtest-arm64",                  
+
+                        "docker-publish-weekly-motsognir-amd64", 
+                        "docker-publish-weekly-motsognir-arm64", 
+                        "docker-publish-weekly-webtest-amd64",
+                        "docker-publish-weekly-webtest-arm64",                  
+                      ],
+        "trigger": {
+            "ref": [
+                "refs/heads/master",
+                "refs/heads/release*",
+                "refs/tags/**",
+                "refs/pull/**",
+            ],
+            "status": [
+                "failure",
+                "success",
+            ],
+        },
+      }
 
 def stepPR(arch, path):
     return {
@@ -35,24 +94,6 @@ def stepPR(arch, path):
                     "dry_run": "true",
                     "tag": "latest-%s" % (arch),
                 }
-            },
-            {
-              "name": "notify-build-%s-%s" % (path, arch),
-              "image": "plugins/matrix",
-              "settings": {
-                "homeserver": {
-                  "from_secret": "matrix-homeserver"
-                },
-                "roomid": {
-                  "from_secret": "matrix-room"
-                },
-                "username": {
-                  "from_secret": "matrix-user"
-                },
-                "password": {
-                  "from_secret": "matrix-password"
-                }
-              }
             },
         ],
         "trigger": {
@@ -92,24 +133,6 @@ def stepMergeMaster(arch, path):
                     }
                 }
             },
-            {
-              "name": "notify-publish-%s-%s" % (path, arch),
-              "image": "plugins/matrix",
-              "settings": {
-                "homeserver": {
-                  "from_secret": "matrix-homeserver"
-                },
-                "roomid": {
-                  "from_secret": "matrix-room"
-                },
-                "username": {
-                  "from_secret": "matrix-user"
-                },
-                "password": {
-                  "from_secret": "matrix-password"
-                }
-              }
-            },
         ],
         "trigger": {
             "ref": [
@@ -147,24 +170,6 @@ def stepBuildWeekly(arch, path):
                         "from_secret": "dockerhub-password"
                     }
                 }
-            },
-            {
-              "name": "notify-publish-%s-%s" % (path, arch),
-              "image": "plugins/matrix",
-              "settings": {
-                "homeserver": {
-                  "from_secret": "matrix-homeserver"
-                },
-                "roomid": {
-                  "from_secret": "matrix-room"
-                },
-                "username": {
-                  "from_secret": "matrix-user"
-                },
-                "password": {
-                  "from_secret": "matrix-password"
-                }
-              }
             },
         ],
         "trigger": {
