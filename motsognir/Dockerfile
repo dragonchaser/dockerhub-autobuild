@@ -4,7 +4,7 @@ ENV VERSION=1.0.13
 ENV TARBALL="motsognir-${VERSION}.tar.xz"
 EXPOSE 70
 RUN apt-get update \
-  && apt-get -y install wget build-essential rsyslog
+  && apt-get -y install wget build-essential rsyslog wget
 WORKDIR /build
 RUN wget "https://downloads.sourceforge.net/project/motsognir/v${VERSION}/${TARBALL}" \
   && tar xfv "${TARBALL}"
