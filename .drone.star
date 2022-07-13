@@ -14,6 +14,13 @@ def main(ctx):
         stepBuildWeekly("amd64", "webtest"),
         stepBuildWeekly("arm64", "webtest"),
 
+        stepPR("amd64", "unbound"),
+        stepPR("arm64", "unbound"),
+        stepMergeMaster("amd64", "unbound"),
+        stepMergeMaster("arm64", "unbound"),
+        stepBuildWeekly("amd64", "unbound"),
+        stepBuildWeekly("arm64", "unbound"),
+        
         notify(ctx),
     ]
 
@@ -50,16 +57,22 @@ def notify(ctx):
                         "docker-build-motsognir-arm64", 
                         "docker-build-webtest-amd64",
                         "docker-build-webtest-arm64",                  
+                        "docker-build-unbound-amd64",
+                        "docker-build-unbound-arm64",                  
 
                         "docker-publish-motsognir-amd64", 
                         "docker-publish-motsognir-arm64", 
                         "docker-publish-webtest-amd64",
                         "docker-publish-webtest-arm64",                  
+                        "docker-publish-unbound-amd64",
+                        "docker-publish-unbound-arm64",                  
 
                         "docker-publish-weekly-motsognir-amd64", 
                         "docker-publish-weekly-motsognir-arm64", 
                         "docker-publish-weekly-webtest-amd64",
                         "docker-publish-weekly-webtest-arm64",                  
+                        "docker-publish-weekly-unbound-amd64",
+                        "docker-publish-weekly-unbound-arm64",                  
                       ],
         "trigger": {
             "ref": [
