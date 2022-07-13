@@ -22,5 +22,8 @@ $> docker run \
     -v /path/to/you/local/unboundfolder/conf:/etc/unbound \
     -v /path/to/you/local/unboundfolder/lib:/var/lib/unbound \
     dragonchaser/unbound:latest-arm64 
-```
+``**
 
+***Note:***
+
+The container will expose the dns port on 5335.
